@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Gemini Mail Review</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Gemini Mail Review</h2>
+    <div id="status">Checking email...</div>
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+    </div>
+    <div id="results" class="results" style="display: none;">
+      <h3>Analysis Results:</h3>
+      <div id="analysis-content"></div>
+      <div class="button-group">
+        <button id="send-anyway" class="button">Send Anyway</button>
+        <button id="edit-email" class="button button-primary">Edit Email</button>
+      </div>
+    </div>
+    <div id="error" class="error" style="display: none;"></div>
+    <div class="settings-link">
+      <a href="#" id="open-settings">Configure API Key</a>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

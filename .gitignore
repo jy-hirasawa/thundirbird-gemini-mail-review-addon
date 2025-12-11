@@ -1,0 +1,6 @@
+node_modules/
+*.log
+*.zip
+.DS_Store
+.env
+web-ext-artifacts/
