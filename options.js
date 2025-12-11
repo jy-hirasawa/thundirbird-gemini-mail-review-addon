@@ -45,6 +45,12 @@ async function testConnection() {
     return;
   }
   
+  // Basic API key format validation (Google API keys are typically 39 characters)
+  if (apiKey.length < 20) {
+    showStatus('API key appears to be too short. Please check your key.', 'error');
+    return;
+  }
+  
   testButton.disabled = true;
   testButton.textContent = 'Testing...';
   

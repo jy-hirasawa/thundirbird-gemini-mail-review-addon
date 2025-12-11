@@ -6,7 +6,7 @@
   "author": "Your Name",
   "applications": {
     "gecko": {
-      "id": "gemini-mail-review@example.com",
+      "id": "gemini-mail-review@thunderbird-addon.localhost",
       "strict_min_version": "102.0"
     }
   },

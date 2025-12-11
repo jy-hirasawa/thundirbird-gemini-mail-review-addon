@@ -26,8 +26,16 @@ function sanitizeContent(content) {
   // Limit length to prevent abuse
   const maxLength = 10000;
   let sanitized = content.substring(0, maxLength);
-  // Escape any markdown or special formatting that might confuse the AI
+  
+  // Escape various markdown and formatting characters that could be used for prompt injection
   sanitized = sanitized.replace(/```/g, '｀｀｀');
+  sanitized = sanitized.replace(/^\s*#{1,6}\s/gm, ''); // Remove markdown headers at line start
+  sanitized = sanitized.replace(/\[INST\]/gi, ''); // Remove instruction tags
+  sanitized = sanitized.replace(/\[\/INST\]/gi, '');
+  sanitized = sanitized.replace(/<<SYS>>/gi, ''); // Remove system tags
+  sanitized = sanitized.replace(/<\/SYS>>/gi, '');
+  sanitized = sanitized.replace(/^\s*---+\s*$/gm, '==='); // Replace horizontal rules
+  
   return sanitized;
 }
 
@@ -129,10 +137,19 @@ async function analyzeEmail() {
     // Get compose details
     const details = await getComposeDetails(currentTab.id);
     
-    // Prepare email content
+    // Prepare email content - handle various recipient formats
+    let toRecipients = '';
+    if (details.to) {
+      if (Array.isArray(details.to)) {
+        toRecipients = details.to.join(', ');
+      } else if (typeof details.to === 'string') {
+        toRecipients = details.to;
+      }
+    }
+    
     const emailContent = {
       subject: details.subject || '',
-      to: details.to ? details.to.join(', ') : '',
+      to: toRecipients,
       body: details.plainTextBody || details.body || ''
     };
 
