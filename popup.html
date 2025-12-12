@@ -13,8 +13,14 @@
       <div class="spinner"></div>
     </div>
     <div id="results" class="results" style="display: none;">
+      <div id="cache-indicator" class="cache-indicator" style="display: none;">
+        <span data-i18n="cachedResponse">📦 Showing cached response</span>
+      </div>
       <h3 data-i18n="analysisResultsHeading">Analysis Results:</h3>
       <div id="analysis-content"></div>
+      <div class="button-group">
+        <button id="re-request" class="button" style="display: none;" data-i18n="reRequestButton">Request Again from Gemini</button>
+      </div>
       <div class="button-group">
         <button id="send-anyway" class="button" data-i18n="sendAnywayButton">Send Anyway</button>
         <button id="edit-email" class="button button-primary" data-i18n="editEmailButton">Edit Email</button>

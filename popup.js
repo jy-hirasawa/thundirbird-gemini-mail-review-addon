@@ -23,6 +23,72 @@ function localizeUI() {
 }
 
 let currentTab = null;
+let currentEmailId = null;
+
+// Generate a unique ID for an email based on its content
+async function generateEmailId(emailContent) {
+  // Combine subject, recipients, and body to create a unique identifier
+  const contentString = `${emailContent.subject || ''}|${emailContent.to || ''}|${emailContent.body || ''}`;
+  
+  // Use crypto.subtle to generate SHA-256 hash
+  const encoder = new TextEncoder();
+  const data = encoder.encode(contentString);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  
+  return hashHex;
+}
+
+// Get cached response for an email ID
+async function getCachedResponse(emailId) {
+  try {
+    const result = await browser.storage.local.get('geminiCache');
+    const cache = result.geminiCache || {};
+    
+    if (cache[emailId]) {
+      return {
+        response: cache[emailId].response,
+        timestamp: cache[emailId].timestamp
+      };
+    }
+    
+    return null;
+  } catch (error) {
+    console.error('Error getting cached response:', error);
+    return null;
+  }
+}
+
+// Save response to cache
+async function saveCachedResponse(emailId, response) {
+  try {
+    const result = await browser.storage.local.get('geminiCache');
+    const cache = result.geminiCache || {};
+    
+    // Store the response with timestamp
+    cache[emailId] = {
+      response: response,
+      timestamp: Date.now()
+    };
+    
+    // Limit cache size to prevent storage issues (keep last 50 entries)
+    const entries = Object.entries(cache);
+    if (entries.length > 50) {
+      // Sort by timestamp and keep only the 50 most recent
+      entries.sort((a, b) => b[1].timestamp - a[1].timestamp);
+      const limitedCache = {};
+      entries.slice(0, 50).forEach(([key, value]) => {
+        limitedCache[key] = value;
+      });
+      await browser.storage.local.set({ geminiCache: limitedCache });
+    } else {
+      await browser.storage.local.set({ geminiCache: cache });
+    }
+  } catch (error) {
+    console.error('Error saving cached response:', error);
+  }
+}
 
 // Get the current compose tab
 async function getCurrentComposeTab() {
@@ -127,11 +193,23 @@ Provide a concise review with specific suggestions. If the email looks good, say
 }
 
 // Display results
-function displayResults(analysis) {
+function displayResults(analysis, isFromCache = false) {
   document.getElementById('loading').style.display = 'none';
   document.getElementById('status').style.display = 'none';
   document.getElementById('results').style.display = 'block';
   document.getElementById('analysis-content').textContent = analysis;
+  
+  // Show/hide cache indicator
+  const cacheIndicator = document.getElementById('cache-indicator');
+  const reRequestButton = document.getElementById('re-request');
+  
+  if (isFromCache) {
+    cacheIndicator.style.display = 'block';
+    reRequestButton.style.display = 'inline-block';
+  } else {
+    cacheIndicator.style.display = 'none';
+    reRequestButton.style.display = 'none';
+  }
 }
 
 // Display error
@@ -143,7 +221,7 @@ function displayError(message) {
 }
 
 // Main analysis function
-async function analyzeEmail() {
+async function analyzeEmail(forceRefresh = false) {
   try {
     // Get API key, endpoint, and custom prompt from storage
     const { geminiApiKey, geminiApiEndpoint, customPrompt } = await browser.storage.local.get(['geminiApiKey', 'geminiApiEndpoint', 'customPrompt']);
@@ -183,12 +261,28 @@ async function analyzeEmail() {
       body: details.plainTextBody || details.body || ''
     };
 
+    // Generate unique ID for this email
+    currentEmailId = await generateEmailId(emailContent);
+    
+    // Check cache if not forcing refresh
+    if (!forceRefresh) {
+      const cachedData = await getCachedResponse(currentEmailId);
+      if (cachedData) {
+        // Display cached results
+        displayResults(cachedData.response, true);
+        return;
+      }
+    }
+
     // Call Gemini API with custom prompt
     document.getElementById('status').textContent = browser.i18n.getMessage('analyzingEmail');
     const analysis = await analyzeEmailWithGemini(emailContent, geminiApiKey, apiEndpoint, customPrompt || '');
     
+    // Save to cache
+    await saveCachedResponse(currentEmailId, analysis);
+    
     // Display results
-    displayResults(analysis);
+    displayResults(analysis, false);
     
   } catch (error) {
     console.error('Error analyzing email:', error);
@@ -203,6 +297,18 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Start analysis when popup opens
   analyzeEmail();
+  
+  // Re-request button
+  document.getElementById('re-request').addEventListener('click', async () => {
+    // Hide results and show loading
+    document.getElementById('results').style.display = 'none';
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('status').style.display = 'block';
+    document.getElementById('status').textContent = browser.i18n.getMessage('analyzingEmail');
+    
+    // Force refresh from Gemini
+    await analyzeEmail(true);
+  });
   
   // Send anyway button
   document.getElementById('send-anyway').addEventListener('click', () => {

@@ -11,6 +11,7 @@ English | [日本語](README.ja.md)
 - ⚠️ **Issue Detection**: Identifies potential problems like missing attachments or unclear messaging
 - 🎯 **Easy to Use**: Simply click the add-on icon in the compose window
 - 🔒 **Secure**: Your API key is stored locally in Thunderbird
+- 📦 **Smart Caching**: Automatically caches responses to avoid redundant API calls for the same email content
 
 ## Installation
 
@@ -54,10 +55,27 @@ English | [日本語](README.ja.md)
 1. Compose an email as usual in Thunderbird
 2. Before sending, click the **Gemini Mail Review** icon in the compose window toolbar
 3. The add-on will analyze your email and show the results
+   - If you've already analyzed this exact email (same subject, recipients, and body), the cached response will be shown instantly
+   - A "📦 Showing cached response" indicator will appear when displaying cached results
 4. Review the AI feedback and suggestions
 5. Choose to either:
+   - **Request Again from Gemini**: Get a fresh analysis from the API (only shown for cached results)
    - **Edit Email**: Close the popup and make changes
    - **Send Anyway**: Proceed with sending (the email is not sent automatically - you still need to click Send)
+
+### Caching Behavior
+
+The add-on intelligently caches Gemini responses to:
+- **Save API calls**: Avoid unnecessary requests for emails you've already analyzed
+- **Faster feedback**: Show instant results when re-opening the same email
+- **Smart detection**: Automatically detects when email content changes and requests fresh analysis
+
+**How caching works:**
+- Each email is identified by a unique hash of its subject, recipients, and body content
+- If you analyze the same email again, the cached response is shown
+- If you edit the email and check again, it's treated as a new email and analyzed fresh
+- Cache stores the last 50 email analyses (oldest entries are automatically removed)
+- Cache is stored locally in your Thunderbird profile using browser.storage.local
 
 ## What Gets Analyzed
 

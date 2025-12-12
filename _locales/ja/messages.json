@@ -166,5 +166,13 @@
   "customPromptDescription": {
     "message": "すべてのメールレビューリクエストの先頭に追加されるカスタム指示を設定できます。Gemini がメールを分析する方法をカスタマイズできます。",
     "description": "Description for custom prompt feature"
+  },
+  "cachedResponse": {
+    "message": "📦 キャッシュから表示中",
+    "description": "Indicator showing that the response is from cache"
+  },
+  "reRequestButton": {
+    "message": "Geminiに再リクエスト",
+    "description": "Button text to re-request analysis from Gemini"
   }
 }
