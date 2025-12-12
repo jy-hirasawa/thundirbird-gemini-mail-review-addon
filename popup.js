@@ -24,6 +24,9 @@ function localizeUI() {
 
 let currentTab = null;
 
+// Cache TTL: 7 days in milliseconds
+const CACHE_TTL = 7 * 24 * 60 * 60 * 1000;
+
 // Generate a unique ID for an email based on its content
 async function generateEmailId(emailContent) {
   // Use JSON serialization to ensure unique and collision-free hashing
@@ -51,6 +54,16 @@ async function getCachedResponse(emailId) {
     const cache = result.geminiCache || {};
     
     if (cache[emailId]) {
+      const cacheAge = Date.now() - cache[emailId].timestamp;
+      
+      // Check if cache has expired (older than CACHE_TTL)
+      if (cacheAge > CACHE_TTL) {
+        // Cache expired, remove it and return null
+        delete cache[emailId];
+        await browser.storage.local.set({ geminiCache: cache });
+        return null;
+      }
+      
       return {
         response: cache[emailId].response,
         timestamp: cache[emailId].timestamp
