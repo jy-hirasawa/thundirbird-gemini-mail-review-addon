@@ -69,7 +69,16 @@ async function getLastCheckedHash(tabId) {
   try {
     const result = await browser.storage.local.get('lastCheckedHashes');
     const hashes = result.lastCheckedHashes || {};
-    return hashes[tabId] || null;
+    const entry = hashes[tabId];
+    
+    // Handle both old format (string) and new format (object with hash/timestamp)
+    if (!entry) {
+      return null;
+    }
+    if (typeof entry === 'string') {
+      return entry;  // Legacy format
+    }
+    return entry.hash || null;
   } catch (error) {
     console.error('Error getting last checked hash:', error);
     return null;
@@ -81,13 +90,29 @@ async function saveLastCheckedHash(tabId, emailId) {
   try {
     const result = await browser.storage.local.get('lastCheckedHashes');
     const hashes = result.lastCheckedHashes || {};
-    hashes[tabId] = emailId;
+    
+    // Store with timestamp for proper cleanup
+    hashes[tabId] = {
+      hash: emailId,
+      timestamp: Date.now()
+    };
     
     // Limit to last 20 tabs to prevent storage bloat
     const keys = Object.keys(hashes);
     if (keys.length > 20) {
-      // Remove first (oldest) entry
-      delete hashes[keys[0]];
+      // Find and remove the oldest entry by timestamp
+      let oldestKey = keys[0];
+      let oldestTime = hashes[oldestKey].timestamp || 0;
+      
+      for (const key of keys) {
+        const entryTime = hashes[key].timestamp || 0;
+        if (entryTime < oldestTime) {
+          oldestTime = entryTime;
+          oldestKey = key;
+        }
+      }
+      
+      delete hashes[oldestKey];
     }
     
     await browser.storage.local.set({ lastCheckedHashes: hashes });
