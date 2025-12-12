@@ -71,8 +71,8 @@ async function analyzeEmailWithGemini(emailContent, apiKey, apiEndpoint, customP
   // Build the prompt - prepend custom prompt if provided
   let prompt = '';
   
-  if (customPrompt) {
-    prompt = `${customPrompt}\n\n`;
+  if (customPrompt && customPrompt.trim()) {
+    prompt = `${customPrompt.trim()}\n\n`;
   }
   
   prompt += `You are an email assistant. Review the following email before it is sent. Check for:
