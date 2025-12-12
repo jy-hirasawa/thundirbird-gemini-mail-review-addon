@@ -171,6 +171,10 @@
     "message": "📦 Showing cached response",
     "description": "Indicator showing that the response is from cache"
   },
+  "contentChangedCachedResponse": {
+    "message": "⚠️ Email content has changed. Showing previous analysis.",
+    "description": "Indicator showing that email content changed but displaying old cached response"
+  },
   "reRequestButton": {
     "message": "Request Again from Gemini",
     "description": "Button text to re-request analysis from Gemini"

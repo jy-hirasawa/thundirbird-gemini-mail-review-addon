@@ -158,3 +158,16 @@ h3 {
   align-items: center;
   gap: 6px;
 }
+
+.content-changed-indicator {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 4px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  color: #856404;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}

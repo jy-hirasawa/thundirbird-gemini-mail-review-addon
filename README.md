@@ -68,12 +68,16 @@ English | [日本語](README.ja.md)
 The add-on intelligently caches Gemini responses to:
 - **Save API calls**: Avoid unnecessary requests for emails you've already analyzed
 - **Faster feedback**: Show instant results when re-opening the same email
-- **Smart detection**: Automatically detects when email content changes and requests fresh analysis
+- **Smart detection**: Automatically detects when email content changes and shows previous analysis first
 
 **How caching works:**
 - Each email is identified by a unique hash of its subject, recipients, and body content
-- If you analyze the same email again, the cached response is shown
-- If you edit the email and check again, it's treated as a new email and analyzed fresh
+- Each compose tab tracks the last analyzed content to detect changes
+- If you analyze the same email again, the cached response is shown instantly
+- **If you edit the email and check again:**
+  - The previous analysis is shown first with a "⚠️ Email content has changed" indicator
+  - A "Request Again from Gemini" button appears to get fresh analysis for the updated content
+  - This allows you to quickly see the previous feedback while deciding if you need a new review
 - Cache stores the last 50 email analyses (oldest entries are automatically removed)
 - Cache is stored locally in your Thunderbird profile using browser.storage.local
 

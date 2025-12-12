@@ -171,6 +171,10 @@
     "message": "📦 キャッシュから表示中",
     "description": "Indicator showing that the response is from cache"
   },
+  "contentChangedCachedResponse": {
+    "message": "⚠️ メール内容が変更されています。前回の分析を表示中。",
+    "description": "Indicator showing that email content changed but displaying old cached response"
+  },
   "reRequestButton": {
     "message": "Geminiに再リクエスト",
     "description": "Button text to re-request analysis from Gemini"
