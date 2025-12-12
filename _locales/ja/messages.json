@@ -140,7 +140,7 @@
     "description": "Button text to edit email"
   },
   "configureApiKeyLink": {
-    "message": "API キーを設定",
+    "message": "APIキー、カスタムプロンプトを設定",
     "description": "Link text to open settings"
   },
   "errorConfigureApiKey": {

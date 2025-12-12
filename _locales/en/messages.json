@@ -140,7 +140,7 @@
     "description": "Button text to edit email"
   },
   "configureApiKeyLink": {
-    "message": "Configure API Key",
+    "message": "Configure API Key and Custom Prompt",
     "description": "Link text to open settings"
   },
   "errorConfigureApiKey": {
