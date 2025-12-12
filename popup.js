@@ -24,6 +24,9 @@ function localizeUI() {
 
 let currentTab = null;
 
+// Cache TTL: 7 days in milliseconds
+const CACHE_TTL = 7 * 24 * 60 * 60 * 1000;
+
 // Generate a unique ID for an email based on its content
 async function generateEmailId(emailContent) {
   // Use JSON serialization to ensure unique and collision-free hashing
@@ -44,6 +47,30 @@ async function generateEmailId(emailContent) {
   return hashHex;
 }
 
+// Remove expired entries from cache (older than CACHE_TTL)
+function cleanupExpiredCache(cache) {
+  const now = Date.now();
+  const cacheKeys = Object.keys(cache);
+  let cleanedCount = 0;
+  
+  for (const key of cacheKeys) {
+    // Safety check: ensure timestamp exists and is a number
+    if (!cache[key] || typeof cache[key].timestamp !== 'number') {
+      delete cache[key];
+      cleanedCount++;
+      continue;
+    }
+    
+    const cacheAge = now - cache[key].timestamp;
+    if (cacheAge > CACHE_TTL) {
+      delete cache[key];
+      cleanedCount++;
+    }
+  }
+  
+  return cleanedCount;
+}
+
 // Get cached response for an email ID
 async function getCachedResponse(emailId) {
   try {
@@ -51,6 +78,23 @@ async function getCachedResponse(emailId) {
     const cache = result.geminiCache || {};
     
     if (cache[emailId]) {
+      // Safety check: ensure timestamp exists
+      if (typeof cache[emailId].timestamp !== 'number') {
+        delete cache[emailId];
+        await browser.storage.local.set({ geminiCache: cache });
+        return null;
+      }
+      
+      const cacheAge = Date.now() - cache[emailId].timestamp;
+      
+      // Check if cache has expired (older than CACHE_TTL)
+      if (cacheAge > CACHE_TTL) {
+        // Cache expired, remove it and return null
+        delete cache[emailId];
+        await browser.storage.local.set({ geminiCache: cache });
+        return null;
+      }
+      
       return {
         response: cache[emailId].response,
         timestamp: cache[emailId].timestamp
@@ -130,6 +174,9 @@ async function saveCachedResponse(emailId, response) {
     const result = await browser.storage.local.get('geminiCache');
     const cache = result.geminiCache || {};
     
+    // Remove expired entries (older than CACHE_TTL)
+    cleanupExpiredCache(cache);
+    
     // Store the response with timestamp
     cache[emailId] = {
       response: response,
@@ -142,11 +189,12 @@ async function saveCachedResponse(emailId, response) {
       // Find and remove the oldest entry
       // O(n) iteration is acceptable here since cache is limited to 51 entries max
       let oldestKey = cacheKeys[0];
-      let oldestTime = cache[oldestKey].timestamp;
+      let oldestTime = cache[oldestKey]?.timestamp || Date.now();
       
       for (const key of cacheKeys) {
-        if (cache[key].timestamp < oldestTime) {
-          oldestTime = cache[key].timestamp;
+        const timestamp = cache[key]?.timestamp;
+        if (typeof timestamp === 'number' && timestamp < oldestTime) {
+          oldestTime = timestamp;
           oldestKey = key;
         }
       }

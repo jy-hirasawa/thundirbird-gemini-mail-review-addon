@@ -79,6 +79,7 @@ The add-on intelligently caches Gemini responses to:
   - A "Request Again from Gemini" button appears to get fresh analysis for the updated content
   - This allows you to quickly see the previous feedback while deciding if you need a new review
 - Cache stores the last 50 email analyses (oldest entries are automatically removed)
+- Cached responses are retained for 7 days and expire automatically after that
 - Cache is stored locally in your Thunderbird profile using browser.storage.local
 
 ## What Gets Analyzed
