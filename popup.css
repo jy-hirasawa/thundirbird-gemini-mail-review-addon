@@ -145,3 +145,16 @@ h3 {
 .issue-list li {
   margin: 4px 0;
 }
+
+.cache-indicator {
+  background: #e8f5e9;
+  border: 1px solid #4caf50;
+  border-radius: 4px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  color: #2e7d32;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}

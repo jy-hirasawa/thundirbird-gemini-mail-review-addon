@@ -24,6 +24,82 @@ function localizeUI() {
 
 let currentTab = null;
 
+// Generate a unique ID for an email based on its content
+async function generateEmailId(emailContent) {
+  // Use JSON serialization to ensure unique and collision-free hashing
+  const contentObject = {
+    subject: emailContent.subject || '',
+    to: emailContent.to || '',
+    body: emailContent.body || ''
+  };
+  const contentString = JSON.stringify(contentObject);
+  
+  // Use crypto.subtle to generate SHA-256 hash
+  const encoder = new TextEncoder();
+  const data = encoder.encode(contentString);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  
+  return hashHex;
+}
+
+// Get cached response for an email ID
+async function getCachedResponse(emailId) {
+  try {
+    const result = await browser.storage.local.get('geminiCache');
+    const cache = result.geminiCache || {};
+    
+    if (cache[emailId]) {
+      return {
+        response: cache[emailId].response,
+        timestamp: cache[emailId].timestamp
+      };
+    }
+    
+    return null;
+  } catch (error) {
+    console.error('Error getting cached response:', error);
+    return null;
+  }
+}
+
+// Save response to cache
+async function saveCachedResponse(emailId, response) {
+  try {
+    const result = await browser.storage.local.get('geminiCache');
+    const cache = result.geminiCache || {};
+    
+    // Store the response with timestamp
+    cache[emailId] = {
+      response: response,
+      timestamp: Date.now()
+    };
+    
+    // Limit cache size to prevent storage issues (keep last 50 entries)
+    const cacheKeys = Object.keys(cache);
+    if (cacheKeys.length > 50) {
+      // Find and remove the oldest entry
+      // O(n) iteration is acceptable here since cache is limited to 51 entries max
+      let oldestKey = cacheKeys[0];
+      let oldestTime = cache[oldestKey].timestamp;
+      
+      for (const key of cacheKeys) {
+        if (cache[key].timestamp < oldestTime) {
+          oldestTime = cache[key].timestamp;
+          oldestKey = key;
+        }
+      }
+      
+      delete cache[oldestKey];
+    }
+    
+    await browser.storage.local.set({ geminiCache: cache });
+  } catch (error) {
+    console.error('Error saving cached response:', error);
+  }
+}
+
 // Get the current compose tab
 async function getCurrentComposeTab() {
   const tabs = await browser.tabs.query({ active: true, currentWindow: true });
@@ -127,11 +203,23 @@ Provide a concise review with specific suggestions. If the email looks good, say
 }
 
 // Display results
-function displayResults(analysis) {
+function displayResults(analysis, isFromCache = false) {
   document.getElementById('loading').style.display = 'none';
   document.getElementById('status').style.display = 'none';
   document.getElementById('results').style.display = 'block';
   document.getElementById('analysis-content').textContent = analysis;
+  
+  // Show/hide cache indicator
+  const cacheIndicator = document.getElementById('cache-indicator');
+  const reRequestButton = document.getElementById('re-request');
+  
+  if (isFromCache) {
+    cacheIndicator.style.display = 'block';
+    reRequestButton.style.display = 'inline-block';
+  } else {
+    cacheIndicator.style.display = 'none';
+    reRequestButton.style.display = 'none';
+  }
 }
 
 // Display error
@@ -143,7 +231,7 @@ function displayError(message) {
 }
 
 // Main analysis function
-async function analyzeEmail() {
+async function analyzeEmail(forceRefresh = false) {
   try {
     // Get API key, endpoint, and custom prompt from storage
     const { geminiApiKey, geminiApiEndpoint, customPrompt } = await browser.storage.local.get(['geminiApiKey', 'geminiApiEndpoint', 'customPrompt']);
@@ -183,12 +271,28 @@ async function analyzeEmail() {
       body: details.plainTextBody || details.body || ''
     };
 
+    // Generate unique ID for this email
+    const emailId = await generateEmailId(emailContent);
+    
+    // Check cache if not forcing refresh
+    if (!forceRefresh) {
+      const cachedData = await getCachedResponse(emailId);
+      if (cachedData) {
+        // Display cached results
+        displayResults(cachedData.response, true);
+        return;
+      }
+    }
+
     // Call Gemini API with custom prompt
     document.getElementById('status').textContent = browser.i18n.getMessage('analyzingEmail');
     const analysis = await analyzeEmailWithGemini(emailContent, geminiApiKey, apiEndpoint, customPrompt || '');
     
+    // Save to cache
+    await saveCachedResponse(emailId, analysis);
+    
     // Display results
-    displayResults(analysis);
+    displayResults(analysis, false);
     
   } catch (error) {
     console.error('Error analyzing email:', error);
@@ -203,6 +307,18 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Start analysis when popup opens
   analyzeEmail();
+  
+  // Re-request button
+  document.getElementById('re-request').addEventListener('click', async () => {
+    // Hide results and show loading
+    document.getElementById('results').style.display = 'none';
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('status').style.display = 'block';
+    document.getElementById('status').textContent = browser.i18n.getMessage('analyzingEmail');
+    
+    // Force refresh from Gemini
+    await analyzeEmail(true);
+  });
   
   // Send anyway button
   document.getElementById('send-anyway').addEventListener('click', () => {
