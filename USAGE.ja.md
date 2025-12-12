@@ -7,11 +7,14 @@
 1. **アドオンのインストール**
    - Thunderbird にアドオンを読み込む（インストール手順は README.md を参照）
 
-2. **API キーの設定**
+2. **API キーとエンドポイントの設定**
    - **ツール** → **アドオンとテーマ** を開く
    - **Gemini Mail Review** を見つけて **設定** をクリック
    - Gemini API キーを入力
-   - **接続テスト** をクリックして確認
+   - （オプション）別の Gemini モデルを使用するために API エンドポイント URL をカスタマイズ
+     - デフォルト: `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent`
+     - `gemini-pro`、`gemini-1.5-pro` などの他のモデルを使用するように変更可能
+   - **接続テスト** をクリックして設定を確認
    - **設定を保存** をクリック
 
 3. **メールを作成**

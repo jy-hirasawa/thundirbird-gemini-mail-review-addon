@@ -40,8 +40,11 @@ Google の Gemini AI を使用してメール送信前にチェックする Thun
    - Thunderbird で **ツール** → **アドオンとテーマ** を開く
    - アドオンリストで **Gemini Mail Review** を見つける
    - **オプション** または **設定** をクリック
-   - API キーを貼り付けて **設定を保存** をクリック
-   - （オプション）**接続テスト** をクリックしてキーが機能することを確認
+   - API キーを貼り付ける
+   - （オプション）別の Gemini モデルを使用する場合は API エンドポイント URL をカスタマイズ
+     - デフォルト: `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent`
+   - **設定を保存** をクリック
+   - （オプション）**接続テスト** をクリックして設定が機能することを確認
 
 ## 使い方
 

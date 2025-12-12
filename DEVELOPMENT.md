@@ -9,10 +9,10 @@ This is a Thunderbird add-on that integrates Google's Gemini AI to review emails
 1. User composes email in Thunderbird
 2. User clicks "Gemini Mail Review" button in compose toolbar
 3. `popup.js` opens and immediately starts analysis:
-   - Retrieves API key from local storage
+   - Retrieves API key and endpoint from local storage
    - Fetches compose details (subject, recipients, body)
    - Sanitizes content to prevent prompt injection
-   - Calls Gemini API with analysis prompt
+   - Calls Gemini API with analysis prompt using configured endpoint
    - Displays results in popup UI
 4. User reviews feedback and decides to edit or send
 
@@ -62,10 +62,21 @@ This is a Thunderbird add-on that integrates Google's Gemini AI to review emails
 
 ## API Integration
 
-### Gemini API Endpoint
+### Configurable Gemini API Endpoint
+
+The add-on supports configurable API endpoints, allowing users to select different Gemini models:
+
+**Default Endpoint:**
 ```
-https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent
+https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent
 ```
+
+**Alternative Models:**
+- `gemini-pro`: `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent`
+- `gemini-1.5-pro`: `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent`
+- `gemini-2.0-flash`: `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent`
+
+Users can configure the endpoint in the options page. If no custom endpoint is set, the default (gemini-2.5-flash) is used automatically.
 
 ### Request Format
 ```javascript

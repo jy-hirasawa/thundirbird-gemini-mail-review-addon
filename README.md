@@ -40,8 +40,11 @@ English | [日本語](README.ja.md)
    - In Thunderbird, go to **Tools** → **Add-ons and Themes**
    - Find **Gemini Mail Review** in your add-ons list
    - Click **Options** or **Preferences**
-   - Paste your API key and click **Save Settings**
-   - (Optional) Click **Test Connection** to verify your key works
+   - Paste your API key
+   - (Optional) Customize the API endpoint URL if you want to use a different Gemini model
+     - Default: `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent`
+   - Click **Save Settings**
+   - (Optional) Click **Test Connection** to verify your configuration works
 
 ## Usage
 

@@ -7,11 +7,14 @@ English | [日本語](USAGE.ja.md)
 1. **Install the Add-on**
    - Load the add-on in Thunderbird (see README.md for installation instructions)
 
-2. **Configure Your API Key**
+2. **Configure Your API Key and Endpoint**
    - Go to **Tools** → **Add-ons and Themes**
    - Find **Gemini Mail Review** and click **Preferences**
    - Enter your Gemini API key
-   - Click **Test Connection** to verify
+   - (Optional) Customize the API endpoint URL to use a different Gemini model
+     - Default: `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent`
+     - You can change this to use other models like `gemini-pro`, `gemini-1.5-pro`, etc.
+   - Click **Test Connection** to verify your configuration
    - Click **Save Settings**
 
 3. **Compose an Email**
