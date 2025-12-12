@@ -57,6 +57,7 @@ jobs:
           cp options.css build/
           cp options.js build/
           cp -r icons build/
+          cp -r _locales build/
           
           # Create ZIP file
           VERSION="${{ steps.version.outputs.version }}"
