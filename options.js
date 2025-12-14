@@ -42,8 +42,10 @@ const statusDiv = document.getElementById('status');
 
 // Default API endpoint
 const DEFAULT_API_ENDPOINT = 'https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent';
-// Default cache retention period in days
+// Cache retention period constants
 const DEFAULT_CACHE_RETENTION_DAYS = 7;
+const MIN_CACHE_RETENTION_DAYS = 1;
+const MAX_CACHE_RETENTION_DAYS = 365;
 
 // Load saved settings
 async function loadSettings() {
@@ -83,7 +85,7 @@ async function saveSettings() {
   }
   
   // Validate cache retention days
-  if (isNaN(cacheRetentionDays) || cacheRetentionDays < 1 || cacheRetentionDays > 365) {
+  if (isNaN(cacheRetentionDays) || cacheRetentionDays < MIN_CACHE_RETENTION_DAYS || cacheRetentionDays > MAX_CACHE_RETENTION_DAYS) {
     showStatus(browser.i18n.getMessage('errorCacheRetentionInvalid'), 'error');
     return;
   }
