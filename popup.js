@@ -47,6 +47,15 @@ async function getCacheTTL() {
   }
 }
 
+// Listen for storage changes to invalidate cached TTL
+browser.storage.onChanged.addListener((changes, areaName) => {
+  if (areaName === 'local' && changes.cacheRetentionDays) {
+    // Invalidate cached TTL when setting changes
+    cachedTTL = null;
+    console.log('Cache retention days changed, invalidating cached TTL');
+  }
+});
+
 // Generate a unique ID for an email based on its content
 async function generateEmailId(emailContent) {
   // Use JSON serialization to ensure unique and collision-free hashing
