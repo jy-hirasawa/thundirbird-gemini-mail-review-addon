@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "__MSG_extensionDescription__",
   "default_locale": "en",
-  "author": "Your Name",
+  "author": "Hirokazu Hirasawa(J-YADO INC.)",
   "applications": {
     "gecko": {
       "id": "gemini-mail-review@thunderbird-addon.localhost",
