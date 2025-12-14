@@ -5,6 +5,7 @@
   "description": "__MSG_extensionDescription__",
   "default_locale": "en",
   "author": "Your Name",
+  "homepage_url": "https://github.com/jy-hirasawa/thundirbird-gemini-mail-review-addon",
   "applications": {
     "gecko": {
       "id": "gemini-mail-review@thunderbird-addon.localhost",
