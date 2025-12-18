@@ -20,9 +20,8 @@ English | [日本語](README.ja.md)
 1. Clone or download this repository
 2. Open Thunderbird
 3. Go to **Tools** → **Add-ons and Themes** (or press `Ctrl+Shift+A`)
-4. Click the gear icon ⚙️ and select **Debug Add-ons**
-5. Click **Load Temporary Add-on**
-6. Navigate to the add-on directory and select the `manifest.json` file
+4. Click the gear icon ⚙️ and select **Install Add-on From File**
+5. Navigate to the add-on directory and select the `manifest.json` file
 
 ### Requirements
 
@@ -129,7 +128,7 @@ This is a pure WebExtension with no build step required. Simply load the extensi
 
 ### Testing
 
-1. Load the add-on as a temporary extension
+1. Install the add-on (see Installation section for instructions)
 2. Configure your API key in the settings
 3. Compose a test email
 4. Click the add-on icon to test the review functionality

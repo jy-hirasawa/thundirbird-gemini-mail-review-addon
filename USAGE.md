@@ -5,7 +5,7 @@ English | [日本語](USAGE.ja.md)
 ## Quick Start
 
 1. **Install the Add-on**
-   - Load the add-on in Thunderbird (see README.md for installation instructions)
+   - Install the add-on in Thunderbird (see README.md for installation instructions)
 
 2. **Configure Your API Key and Endpoint**
    - Go to **Tools** → **Add-ons and Themes**
