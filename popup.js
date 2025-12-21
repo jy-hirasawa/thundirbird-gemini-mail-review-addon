@@ -255,16 +255,22 @@ async function saveCachedResponse(emailId, response) {
 async function getCurrentComposeTab() {
   // Check if tab ID is provided in URL parameter (when opened as separate window)
   const urlParams = new URLSearchParams(window.location.search);
-  const tabId = urlParams.get('tabId');
+  const tabIdParam = urlParams.get('tabId');
   
-  if (tabId) {
-    // Tab ID provided, get the tab directly
-    try {
-      const tab = await browser.tabs.get(parseInt(tabId, 10));
-      return tab;
-    } catch (error) {
-      console.error("Error getting tab by ID:", error);
-      // Fall back to querying active tab
+  if (tabIdParam) {
+    // Validate that tabId is a valid numeric string
+    const tabId = parseInt(tabIdParam, 10);
+    if (!isNaN(tabId) && tabId > 0) {
+      // Tab ID provided and valid, get the tab directly
+      try {
+        const tab = await browser.tabs.get(tabId);
+        return tab;
+      } catch (error) {
+        console.error("Error getting tab by ID:", error);
+        // Fall back to querying active tab
+      }
+    } else {
+      console.warn("Invalid tab ID parameter:", tabIdParam);
     }
   }
   
