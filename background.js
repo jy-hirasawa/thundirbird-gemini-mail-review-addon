@@ -15,7 +15,7 @@ browser.composeAction.onClicked.addListener((tab) => {
   browser.windows.create({
     url: `popup.html?tabId=${encodeURIComponent(tab.id)}`,
     type: "popup",
-    width: 600,
+    width: 1000,
     height: 700
   }).then((window) => {
     console.log("Review window opened:", window.id);
