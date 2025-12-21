@@ -20,7 +20,6 @@
     "scripts": ["background.js"]
   },
   "compose_action": {
-    "default_popup": "popup.html",
     "default_title": "Check email with Gemini",
     "default_icon": {
       "16": "icons/icon-16.png",
