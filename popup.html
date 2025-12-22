@@ -9,11 +9,11 @@
   <div class="container">
     <h2 data-i18n="popupTitle">Gemini Mail Review</h2>
     
-    <!-- Template selection and custom prompt editing section -->
-    <div id="prompt-section" class="prompt-section">
+    <!-- Template selection and custom prompt editing section (shown only on initial load) -->
+    <div id="prompt-section" class="prompt-section" style="display: none;">
       <div class="form-group">
-        <label for="template-selector" data-i18n="selectTemplateLabel">Select Custom Prompt Template:</label>
-        <select id="template-selector" class="template-selector">
+        <label for="template-selector-initial" data-i18n="selectTemplateLabel">Select Custom Prompt Template:</label>
+        <select id="template-selector-initial" class="template-selector">
           <option value="1">Template 1</option>
           <option value="2">Template 2</option>
           <option value="3">Template 3</option>
@@ -21,8 +21,8 @@
       </div>
       
       <div class="form-group">
-        <label for="custom-prompt-edit" data-i18n="editPromptLabel">Edit Custom Prompt:</label>
-        <textarea id="custom-prompt-edit" rows="4" data-i18n-placeholder="customPromptPlaceholder" placeholder="Optional: Enter additional instructions for Gemini AI"></textarea>
+        <label for="custom-prompt-edit-initial" data-i18n="editPromptLabel">Edit Custom Prompt:</label>
+        <textarea id="custom-prompt-edit-initial" rows="4" data-i18n-placeholder="customPromptPlaceholder" placeholder="Optional: Enter additional instructions for Gemini AI"></textarea>
       </div>
       
       <div class="button-group">
@@ -43,6 +43,24 @@
       </div>
       <h3 data-i18n="analysisResultsHeading">Analysis Results:</h3>
       <div id="analysis-content"></div>
+      
+      <!-- Template selector in results section -->
+      <div id="results-prompt-section" class="results-prompt-section" style="display: none;">
+        <div class="form-group">
+          <label for="template-selector" data-i18n="selectTemplateLabel">Select Custom Prompt Template:</label>
+          <select id="template-selector" class="template-selector">
+            <option value="1">Template 1</option>
+            <option value="2">Template 2</option>
+            <option value="3">Template 3</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="custom-prompt-edit" data-i18n="editPromptLabel">Edit Custom Prompt:</label>
+          <textarea id="custom-prompt-edit" rows="4" data-i18n-placeholder="customPromptPlaceholder" placeholder="Optional: Enter additional instructions for Gemini AI"></textarea>
+        </div>
+      </div>
+      
       <div class="button-group">
         <button id="re-request" class="button" style="display: none;" data-i18n="reRequestButton">Request Again from Gemini</button>
       </div>
