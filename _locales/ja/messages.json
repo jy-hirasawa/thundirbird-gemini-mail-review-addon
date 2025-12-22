@@ -234,5 +234,37 @@
   "reRequestButton": {
     "message": "Geminiに再リクエスト",
     "description": "Button text to re-request analysis from Gemini"
+  },
+  "cacheManagementLabel": {
+    "message": "キャッシュ管理:",
+    "description": "Label for cache management section"
+  },
+  "cacheManagementDescription": {
+    "message": "キャッシュにはメール内容と分析結果が含まれます。すべての保存されたメールデータを削除するには、キャッシュをクリアしてください。",
+    "description": "Description for cache management feature"
+  },
+  "clearCacheButton": {
+    "message": "すべてのキャッシュデータをクリア",
+    "description": "Button text to clear all cached data"
+  },
+  "confirmClearCache": {
+    "message": "すべてのキャッシュされた分析結果をクリアしてもよろしいですか？この操作は元に戻せません。",
+    "description": "Confirmation message before clearing cache"
+  },
+  "successCacheCleared": {
+    "message": "キャッシュが正常にクリアされました",
+    "description": "Success message when cache is cleared"
+  },
+  "errorClearingCache": {
+    "message": "キャッシュのクリアエラー:",
+    "description": "Error message when clearing cache fails"
+  },
+  "securityLabel": {
+    "message": "セキュリティ:",
+    "description": "Label for security notice"
+  },
+  "aboutDescription3": {
+    "message": "APIキーとメールキャッシュはThunderbirdのストレージにローカル保存されます。キャッシュにはメールの件名、受信者、本文が含まれます。機密性の高いメールの場合は、上記のキャッシュ管理オプションを使用してキャッシュを定期的にクリアすることを検討してください。",
+    "description": "Third paragraph of about description - security notice"
   }
 }

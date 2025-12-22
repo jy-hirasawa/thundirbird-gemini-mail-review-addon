@@ -63,6 +63,14 @@
         </p>
       </div>
       
+      <div class="form-group">
+        <label data-i18n="cacheManagementLabel">Cache Management:</label>
+        <p class="description" data-i18n="cacheManagementDescription">
+          Cached data includes email content and analysis results. Clear cache to remove all stored email data.
+        </p>
+        <button id="clear-cache" class="button" data-i18n="clearCacheButton">Clear All Cached Data</button>
+      </div>
+      
       <div id="status" class="status"></div>
       
       <div class="button-group">
@@ -80,6 +88,12 @@
       <p>
         <strong data-i18n="privacyLabel">Privacy:</strong> <span data-i18n="aboutDescription2">Your emails are sent to Google's Gemini API for analysis. 
         Please review Google's privacy policy before using this add-on.</span>
+      </p>
+      <p>
+        <strong data-i18n="securityLabel">Security:</strong> <span data-i18n="aboutDescription3">
+        Your API key and email cache are stored locally in Thunderbird's storage. 
+        The cache includes email subjects, recipients, and body content. 
+        For sensitive emails, consider disabling cache or clearing it regularly using the cache management option above.</span>
       </p>
     </div>
   </div>

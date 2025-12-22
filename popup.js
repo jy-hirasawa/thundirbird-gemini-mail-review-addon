@@ -392,6 +392,11 @@ function sanitizeContent(content) {
   sanitized = sanitized.replace(/<\/SYS>>/gi, '');
   sanitized = sanitized.replace(/^\s*---+\s*$/gm, '==='); // Replace horizontal rules
   
+  // Additional security: Remove common AI jailbreak patterns
+  sanitized = sanitized.replace(/ignore\s+(all\s+)?(previous|above|prior)\s+instructions?/gi, '[removed]');
+  sanitized = sanitized.replace(/disregard\s+(all\s+)?(previous|above|prior)\s+instructions?/gi, '[removed]');
+  sanitized = sanitized.replace(/forget\s+(all\s+)?(previous|above|prior)\s+instructions?/gi, '[removed]');
+  
   return sanitized;
 }
 
@@ -522,6 +527,33 @@ function displayError(message) {
   document.getElementById('error').textContent = message;
 }
 
+// Validate API endpoint URL to prevent SSRF attacks (same validation as options.js)
+function validateApiEndpoint(endpoint) {
+  try {
+    const url = new URL(endpoint);
+    // Only allow HTTPS protocol for security
+    if (url.protocol !== 'https:') {
+      return { valid: false, error: 'API endpoint must use HTTPS protocol' };
+    }
+    // Validate hostname is not a local/private address
+    const hostname = url.hostname.toLowerCase();
+    if (hostname === 'localhost' || 
+        hostname === '127.0.0.1' ||
+        hostname.startsWith('192.168.') ||
+        hostname.startsWith('10.') ||
+        hostname.match(/^172\.(1[6-9]|2[0-9]|3[0-1])\./)) {
+      return { valid: false, error: 'API endpoint cannot be a local or private address' };
+    }
+    // Validate it's the expected Google API domain
+    if (!hostname.includes('googleapis.com') && !hostname.includes('google.com')) {
+      return { valid: false, error: 'API endpoint must be a Google API domain (googleapis.com)' };
+    }
+    return { valid: true };
+  } catch (error) {
+    return { valid: false, error: 'Invalid API endpoint URL format' };
+  }
+}
+
 // Main analysis function
 async function analyzeEmail(forceRefresh = false, useInitialPrompt = false) {
   try {
@@ -544,6 +576,13 @@ async function analyzeEmail(forceRefresh = false, useInitialPrompt = false) {
     
     // Use default endpoint if not configured
     const apiEndpoint = geminiApiEndpoint || 'https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent';
+    
+    // Validate API endpoint for security
+    const endpointValidation = validateApiEndpoint(apiEndpoint);
+    if (!endpointValidation.valid) {
+      displayError(endpointValidation.error);
+      return;
+    }
 
     // Get current compose tab
     currentTab = await getCurrentComposeTab();

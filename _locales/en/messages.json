@@ -234,5 +234,37 @@
   "reRequestButton": {
     "message": "Request Again from Gemini",
     "description": "Button text to re-request analysis from Gemini"
+  },
+  "cacheManagementLabel": {
+    "message": "Cache Management:",
+    "description": "Label for cache management section"
+  },
+  "cacheManagementDescription": {
+    "message": "Cached data includes email content and analysis results. Clear cache to remove all stored email data.",
+    "description": "Description for cache management feature"
+  },
+  "clearCacheButton": {
+    "message": "Clear All Cached Data",
+    "description": "Button text to clear all cached data"
+  },
+  "confirmClearCache": {
+    "message": "Are you sure you want to clear all cached analysis results? This cannot be undone.",
+    "description": "Confirmation message before clearing cache"
+  },
+  "successCacheCleared": {
+    "message": "Cache cleared successfully",
+    "description": "Success message when cache is cleared"
+  },
+  "errorClearingCache": {
+    "message": "Error clearing cache:",
+    "description": "Error message when clearing cache fails"
+  },
+  "securityLabel": {
+    "message": "Security:",
+    "description": "Label for security notice"
+  },
+  "aboutDescription3": {
+    "message": "Your API key and email cache are stored locally in Thunderbird's storage. The cache includes email subjects, recipients, and body content. For sensitive emails, consider disabling cache or clearing it regularly using the cache management option above.",
+    "description": "Third paragraph of about description - security notice"
   }
 }

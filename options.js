@@ -43,6 +43,7 @@ const cacheRetentionInput = document.getElementById('cache-retention-days');
 const toggleButton = document.getElementById('toggle-visibility');
 const saveButton = document.getElementById('save');
 const testButton = document.getElementById('test');
+const clearCacheButton = document.getElementById('clear-cache');
 const statusDiv = document.getElementById('status');
 
 // Default API endpoint
@@ -51,6 +52,48 @@ const DEFAULT_API_ENDPOINT = 'https://generativelanguage.googleapis.com/v1/model
 const DEFAULT_CACHE_RETENTION_DAYS = 7;
 const MIN_CACHE_RETENTION_DAYS = 1;
 const MAX_CACHE_RETENTION_DAYS = 365;
+
+// Sanitize custom prompt to prevent malicious content
+function sanitizeCustomPrompt(prompt) {
+  if (!prompt) return '';
+  // Limit prompt length to reasonable size
+  const maxLength = 5000;
+  let sanitized = prompt.substring(0, maxLength).trim();
+  
+  // Remove potential system-level instruction injection patterns
+  sanitized = sanitized.replace(/ignore\s+(all\s+)?(previous|above|prior)\s+instructions?/gi, '[removed]');
+  sanitized = sanitized.replace(/disregard\s+(all\s+)?(previous|above|prior)\s+instructions?/gi, '[removed]');
+  sanitized = sanitized.replace(/forget\s+(all\s+)?(previous|above|prior)\s+instructions?/gi, '[removed]');
+  
+  return sanitized;
+}
+
+// Validate API endpoint URL to prevent SSRF attacks
+function validateApiEndpoint(endpoint) {
+  try {
+    const url = new URL(endpoint);
+    // Only allow HTTPS protocol for security
+    if (url.protocol !== 'https:') {
+      return { valid: false, error: 'API endpoint must use HTTPS protocol' };
+    }
+    // Validate hostname is not a local/private address
+    const hostname = url.hostname.toLowerCase();
+    if (hostname === 'localhost' || 
+        hostname === '127.0.0.1' ||
+        hostname.startsWith('192.168.') ||
+        hostname.startsWith('10.') ||
+        hostname.match(/^172\.(1[6-9]|2[0-9]|3[0-1])\./)) {
+      return { valid: false, error: 'API endpoint cannot be a local or private address' };
+    }
+    // Validate it's the expected Google API domain (with flexibility for regional endpoints)
+    if (!hostname.includes('googleapis.com') && !hostname.includes('google.com')) {
+      return { valid: false, error: 'API endpoint must be a Google API domain (googleapis.com)' };
+    }
+    return { valid: true };
+  } catch (error) {
+    return { valid: false, error: 'Invalid API endpoint URL format' };
+  }
+}
 
 // Load saved settings
 async function loadSettings() {
@@ -102,6 +145,33 @@ async function loadSettings() {
   }
 }
 
+// Validate API endpoint URL to prevent SSRF attacks
+function validateApiEndpoint(endpoint) {
+  try {
+    const url = new URL(endpoint);
+    // Only allow HTTPS protocol for security
+    if (url.protocol !== 'https:') {
+      return { valid: false, error: 'API endpoint must use HTTPS protocol' };
+    }
+    // Validate hostname is not a local/private address
+    const hostname = url.hostname.toLowerCase();
+    if (hostname === 'localhost' || 
+        hostname === '127.0.0.1' ||
+        hostname.startsWith('192.168.') ||
+        hostname.startsWith('10.') ||
+        hostname.match(/^172\.(1[6-9]|2[0-9]|3[0-1])\./)) {
+      return { valid: false, error: 'API endpoint cannot be a local or private address' };
+    }
+    // Validate it's the expected Google API domain (with flexibility for regional endpoints)
+    if (!hostname.includes('googleapis.com') && !hostname.includes('google.com')) {
+      return { valid: false, error: 'API endpoint must be a Google API domain (googleapis.com)' };
+    }
+    return { valid: true };
+  } catch (error) {
+    return { valid: false, error: 'Invalid API endpoint URL format' };
+  }
+}
+
 // Save settings
 async function saveSettings() {
   const apiKey = apiKeyInput.value.trim();
@@ -111,16 +181,16 @@ async function saveSettings() {
   // Get custom prompt templates
   const customPromptTemplates = {
     template1: {
-      name: customPromptName1Input.value.trim(),
-      content: customPrompt1Input.value.trim()
+      name: customPromptName1Input.value.trim().substring(0, 100), // Limit name length
+      content: sanitizeCustomPrompt(customPrompt1Input.value)
     },
     template2: {
-      name: customPromptName2Input.value.trim(),
-      content: customPrompt2Input.value.trim()
+      name: customPromptName2Input.value.trim().substring(0, 100),
+      content: sanitizeCustomPrompt(customPrompt2Input.value)
     },
     template3: {
-      name: customPromptName3Input.value.trim(),
-      content: customPrompt3Input.value.trim()
+      name: customPromptName3Input.value.trim().substring(0, 100),
+      content: sanitizeCustomPrompt(customPrompt3Input.value)
     }
   };
   
@@ -131,6 +201,13 @@ async function saveSettings() {
   
   if (!apiEndpoint) {
     showStatus(browser.i18n.getMessage('errorEndpointRequired'), 'error');
+    return;
+  }
+  
+  // Validate API endpoint for security
+  const endpointValidation = validateApiEndpoint(apiEndpoint);
+  if (!endpointValidation.valid) {
+    showStatus(endpointValidation.error, 'error');
     return;
   }
   
@@ -170,6 +247,13 @@ async function testConnection() {
   
   if (!apiEndpoint) {
     showStatus(browser.i18n.getMessage('errorTestEndpointFirst'), 'error');
+    return;
+  }
+  
+  // Validate API endpoint for security
+  const endpointValidation = validateApiEndpoint(apiEndpoint);
+  if (!endpointValidation.valid) {
+    showStatus(endpointValidation.error, 'error');
     return;
   }
   
@@ -230,6 +314,21 @@ function toggleVisibility() {
   }
 }
 
+// Clear all cached data for security/privacy
+async function clearCache() {
+  if (!confirm(browser.i18n.getMessage('confirmClearCache') || 'Are you sure you want to clear all cached analysis results? This cannot be undone.')) {
+    return;
+  }
+  
+  try {
+    await browser.storage.local.remove(['geminiCache', 'lastCheckedHashes']);
+    showStatus(browser.i18n.getMessage('successCacheCleared') || 'Cache cleared successfully', 'success');
+  } catch (error) {
+    console.error('Error clearing cache:', error);
+    showStatus(browser.i18n.getMessage('errorClearingCache') || 'Error clearing cache: ' + error.message, 'error');
+  }
+}
+
 // Show status message
 function showStatus(message, type) {
   statusDiv.textContent = message;
@@ -250,6 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
 saveButton.addEventListener('click', saveSettings);
 testButton.addEventListener('click', testConnection);
 toggleButton.addEventListener('click', toggleVisibility);
+clearCacheButton.addEventListener('click', clearCache);
 
 // Save on Enter key
 apiKeyInput.addEventListener('keypress', (e) => {
