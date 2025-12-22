@@ -239,7 +239,8 @@ async function saveSettings() {
       cacheRetentionDays: cacheRetentionDays
     });
     
-    // Remove legacy unencrypted fields if they exist
+    // Remove legacy unencrypted fields after successful save
+    // This migration is safe because encrypted versions were just saved successfully
     await browser.storage.local.remove(['geminiApiKey', 'customPrompt', 'customPromptTemplates']);
     
     showStatus(browser.i18n.getMessage('successSaved'), 'success');

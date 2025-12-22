@@ -242,12 +242,12 @@ function isEncrypted(data) {
   try {
     JSON.parse(data);
     return false;
-  } catch {
+  } catch (e) {
     // Not valid JSON, check if it's valid base64
     try {
       atob(data);
       return true; // Valid base64, likely encrypted
-    } catch {
+    } catch (e2) {
       return false; // Not valid base64 either
     }
   }

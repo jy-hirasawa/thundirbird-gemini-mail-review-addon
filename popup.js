@@ -372,7 +372,9 @@ async function saveCachedResponse(emailId, response, customPrompt) {
     const cacheKeys = Object.keys(cache);
     if (cacheKeys.length > 50) {
       // Find and remove the oldest entry
-      // For encrypted entries, we need to decrypt to check timestamp
+      // Note: This requires decrypting entries to check timestamps
+      // Trade-off: Performance vs. simplicity. Cache limit is 50 so this is infrequent.
+      // Alternative would be to store timestamps separately, but adds complexity.
       let oldestKey = null;
       let oldestTime = Date.now();
       
