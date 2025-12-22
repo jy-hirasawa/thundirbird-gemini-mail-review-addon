@@ -50,6 +50,7 @@ jobs:
           # Copy necessary files to build directory
           cp manifest.json build/
           cp background.js build/
+          cp crypto-utils.js build/
           cp popup.html build/
           cp popup.css build/
           cp popup.js build/
