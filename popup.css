@@ -209,7 +209,8 @@ h3 {
   box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.1);
 }
 
-#custom-prompt-edit {
+#custom-prompt-edit,
+#custom-prompt-edit-initial {
   width: 100%;
   padding: 8px 12px;
   border: 1px solid #ddd;
@@ -221,8 +222,18 @@ h3 {
   box-sizing: border-box;
 }
 
-#custom-prompt-edit:focus {
+#custom-prompt-edit:focus,
+#custom-prompt-edit-initial:focus {
   outline: none;
   border-color: #0a84ff;
   box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.1);
+}
+
+.results-prompt-section {
+  background: #f9f9f9;
+  border-radius: 6px;
+  padding: 12px;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  border: 1px solid #e0e0e0;
 }

@@ -116,9 +116,11 @@ async function loadCustomPromptTemplates() {
 }
 
 // Update template selector options with names
-async function updateTemplateSelectorOptions() {
+async function updateTemplateSelectorOptions(selectorId) {
   const templates = await loadCustomPromptTemplates();
-  const selector = document.getElementById('template-selector');
+  const selector = document.getElementById(selectorId);
+  
+  if (!selector) return;
   
   // Update option labels with template names if they exist
   for (let i = 1; i <= 3; i++) {
@@ -133,9 +135,12 @@ async function updateTemplateSelectorOptions() {
 }
 
 // Handle template selection change
-function handleTemplateChange() {
-  const selector = document.getElementById('template-selector');
-  const promptEdit = document.getElementById('custom-prompt-edit');
+function handleTemplateChange(selectorId, promptEditId) {
+  const selector = document.getElementById(selectorId);
+  const promptEdit = document.getElementById(promptEditId);
+  
+  if (!selector || !promptEdit) return;
+  
   const selectedValue = selector.value;
   
   if (customPromptTemplates) {
@@ -464,6 +469,7 @@ function displayResults(analysis, isFromCache = false, contentChanged = false) {
   const cacheIndicator = document.getElementById('cache-indicator');
   const contentChangedIndicator = document.getElementById('content-changed-indicator');
   const reRequestButton = document.getElementById('re-request');
+  const resultsPromptSection = document.getElementById('results-prompt-section');
   
   if (isFromCache) {
     if (contentChanged) {
@@ -476,10 +482,12 @@ function displayResults(analysis, isFromCache = false, contentChanged = false) {
       contentChangedIndicator.style.display = 'none';
     }
     reRequestButton.style.display = 'inline-block';
+    resultsPromptSection.style.display = 'block';
   } else {
     cacheIndicator.style.display = 'none';
     contentChangedIndicator.style.display = 'none';
     reRequestButton.style.display = 'none';
+    resultsPromptSection.style.display = 'none';
   }
 }
 
@@ -492,7 +500,7 @@ function displayError(message) {
 }
 
 // Main analysis function
-async function analyzeEmail(forceRefresh = false) {
+async function analyzeEmail(forceRefresh = false, useInitialPrompt = false) {
   try {
     // Get API key and endpoint from storage
     const { geminiApiKey, geminiApiEndpoint } = await browser.storage.local.get(['geminiApiKey', 'geminiApiEndpoint']);
@@ -502,8 +510,13 @@ async function analyzeEmail(forceRefresh = false) {
       return;
     }
     
-    // Get custom prompt from the editable textarea
-    const customPromptEdit = document.getElementById('custom-prompt-edit');
+    // Get custom prompt from the appropriate textarea depending on which section is being used
+    let customPromptEdit;
+    if (useInitialPrompt) {
+      customPromptEdit = document.getElementById('custom-prompt-edit-initial');
+    } else {
+      customPromptEdit = document.getElementById('custom-prompt-edit');
+    }
     const customPrompt = customPromptEdit ? customPromptEdit.value.trim() : '';
     
     // Use default endpoint if not configured
@@ -584,6 +597,75 @@ async function analyzeEmail(forceRefresh = false) {
   }
 }
 
+// Check for cached results on page load
+async function checkForCachedResults() {
+  try {
+    // Get current compose tab
+    currentTab = await getCurrentComposeTab();
+    
+    if (!currentTab) {
+      // No compose tab, show initial prompt section
+      document.getElementById('prompt-section').style.display = 'block';
+      return false;
+    }
+
+    // Get compose details
+    const details = await getComposeDetails(currentTab.id);
+    
+    // Prepare email content
+    let toRecipients = '';
+    if (details.to) {
+      if (Array.isArray(details.to)) {
+        toRecipients = details.to.join(', ');
+      } else if (typeof details.to === 'string') {
+        toRecipients = details.to;
+      }
+    }
+    
+    const emailContent = {
+      subject: details.subject || '',
+      to: toRecipients,
+      body: details.plainTextBody || details.body || ''
+    };
+
+    // Generate unique ID for this email based on content
+    const emailId = await generateEmailId(emailContent);
+    
+    // Check if content has changed since last check for this tab
+    const lastCheckedHash = await getLastCheckedHash(currentTab.id);
+    const contentChanged = lastCheckedHash && lastCheckedHash !== emailId;
+    
+    // Try to get cache for current content
+    let cachedData = await getCachedResponse(emailId);
+    if (cachedData) {
+      // Display cached results for exact same content
+      await saveLastCheckedHash(currentTab.id, emailId);
+      displayResults(cachedData.response, true, false);
+      return true;
+    }
+    
+    // If content changed, try to show old cache from last check
+    if (contentChanged) {
+      cachedData = await getCachedResponse(lastCheckedHash);
+      if (cachedData) {
+        // Display old cached results with indicator that content changed
+        displayResults(cachedData.response, true, true);
+        return true;
+      }
+    }
+    
+    // No cache found, show initial prompt section
+    document.getElementById('prompt-section').style.display = 'block';
+    return false;
+    
+  } catch (error) {
+    console.error('Error checking for cached results:', error);
+    // Show initial prompt section on error
+    document.getElementById('prompt-section').style.display = 'block';
+    return false;
+  }
+}
+
 // Event listeners
 document.addEventListener('DOMContentLoaded', async () => {
   // Localize UI first
@@ -591,16 +673,28 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   // Load and initialize custom prompt templates
   await loadCustomPromptTemplates();
-  await updateTemplateSelectorOptions();
+  await updateTemplateSelectorOptions('template-selector');
+  await updateTemplateSelectorOptions('template-selector-initial');
   
-  // Set up template selector change listener
+  // Set up template selector change listeners for both selectors
   const templateSelector = document.getElementById('template-selector');
-  templateSelector.addEventListener('change', handleTemplateChange);
+  if (templateSelector) {
+    templateSelector.addEventListener('change', () => handleTemplateChange('template-selector', 'custom-prompt-edit'));
+    // Initialize the first template content
+    handleTemplateChange('template-selector', 'custom-prompt-edit');
+  }
   
-  // Initialize the first template content in the edit textarea
-  handleTemplateChange();
+  const templateSelectorInitial = document.getElementById('template-selector-initial');
+  if (templateSelectorInitial) {
+    templateSelectorInitial.addEventListener('change', () => handleTemplateChange('template-selector-initial', 'custom-prompt-edit-initial'));
+    // Initialize the first template content
+    handleTemplateChange('template-selector-initial', 'custom-prompt-edit-initial');
+  }
   
-  // Analyze button - don't auto-analyze, wait for user click
+  // Check for cached results on page load
+  await checkForCachedResults();
+  
+  // Analyze button - for initial prompt section
   document.getElementById('analyze').addEventListener('click', async () => {
     // Hide prompt section and show loading
     document.getElementById('prompt-section').style.display = 'none';
@@ -608,11 +702,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('status').style.display = 'block';
     document.getElementById('status').textContent = browser.i18n.getMessage('analyzingEmail');
     
-    // Start analysis
-    await analyzeEmail(false);
+    // Start analysis using initial prompt
+    await analyzeEmail(false, true);
   });
   
-  // Re-request button
+  // Re-request button - for results section
   document.getElementById('re-request').addEventListener('click', async () => {
     // Hide results and show loading
     document.getElementById('results').style.display = 'none';
@@ -620,8 +714,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('status').style.display = 'block';
     document.getElementById('status').textContent = browser.i18n.getMessage('analyzingEmail');
     
-    // Force refresh from Gemini
-    await analyzeEmail(true);
+    // Force refresh from Gemini using results section prompt
+    await analyzeEmail(true, false);
   });
   
   // Send anyway button
