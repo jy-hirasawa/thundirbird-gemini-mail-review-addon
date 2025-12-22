@@ -2,6 +2,10 @@
 
 This file contains important instructions for GitHub Copilot and automated agents working on this repository.
 
+## About This Repository
+
+This repository contains a **Thunderbird add-on that uses Google's Gemini AI to review emails before sending**. The add-on analyzes email content for spelling, grammar, tone, clarity, and potential issues, providing intelligent feedback to help users improve their emails before they are sent.
+
 ## Build and Release Configuration
 
 ### When Adding New Files to the Addon
