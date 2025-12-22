@@ -597,7 +597,8 @@ async function analyzeEmail(forceRefresh = false, useInitialPrompt = false) {
     await saveLastCheckedHash(currentTab.id, emailId);
     
     // Display results
-    displayResults(analysis, false, false);
+    // If this was a force refresh (re-request), show the prompt section again
+    displayResults(analysis, forceRefresh, false, customPrompt);
     
   } catch (error) {
     console.error('Error analyzing email:', error);
