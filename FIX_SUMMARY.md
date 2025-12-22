@@ -138,9 +138,12 @@ You can test the fix in a regular browser using the test file in `/tmp/test-cryp
 
 - [x] Code changes committed
 - [x] Syntax validation passed
-- [x] Security scan passed (CodeQL)
+- [x] Security scan passed (CodeQL - 0 alerts)
 - [x] Code review completed
+- [x] All code review feedback addressed
 - [x] Defensive checks added in all CryptoUtils usage
+- [x] API key validation improved (non-empty string check)
+- [x] Cache entry timestamp handling improved (-1 for invalid entries)
 - [ ] Manual testing in Thunderbird (requires user to test)
 - [ ] Settings save works without error
 - [ ] Settings load works correctly
@@ -165,7 +168,16 @@ You can test the fix in a regular browser using the test file in `/tmp/test-cryp
 - The fix assumes that if `crypto-utils.js` loads successfully, the initialization will always work
 - If there's a fundamental issue with the Web Crypto API availability, the error messages guide users to reload the page
 - Legacy unencrypted data is supported for backward compatibility
+- API keys are validated to be non-empty strings before use in fallback scenarios
+- Invalid cache entries are marked with timestamp -1 for better debugging
+
+## Code Quality Improvements
+
+Following code review feedback, the following improvements were made:
+1. **API Key Validation**: Added type and empty string checks before using legacy unencrypted API keys
+2. **Cache Entry Handling**: Changed invalid entry timestamp from 0 to -1 to distinguish from legitimate old entries
+3. **Console Messages**: Improved clarity of warning and error messages for debugging
 
 ## Additional Notes
 
-The console.log statement "CryptoUtils initialized successfully" was added for debugging. It helps confirm that the initialization is working correctly and can be seen in the browser console. This can be removed in a future update if deemed unnecessary.
+The console.log statement "CryptoUtils initialized successfully" was added for debugging. It helps confirm that the initialization is working correctly and can be seen in the browser console. This is useful for troubleshooting and can be removed in a future update if deemed unnecessary.
