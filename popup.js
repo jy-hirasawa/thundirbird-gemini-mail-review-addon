@@ -222,7 +222,8 @@ async function getCachedResponse(emailId) {
       
       return {
         response: cache[emailId].response,
-        timestamp: cache[emailId].timestamp
+        timestamp: cache[emailId].timestamp,
+        customPrompt: cache[emailId].customPrompt || ''
       };
     }
     
@@ -294,7 +295,7 @@ async function saveLastCheckedHash(tabId, emailId) {
 }
 
 // Save response to cache
-async function saveCachedResponse(emailId, response) {
+async function saveCachedResponse(emailId, response, customPrompt) {
   try {
     const cacheTTL = await getCacheTTL();
     const result = await browser.storage.local.get('geminiCache');
@@ -303,10 +304,11 @@ async function saveCachedResponse(emailId, response) {
     // Remove expired entries (older than cacheTTL)
     cleanupExpiredCache(cache, cacheTTL);
     
-    // Store the response with timestamp
+    // Store the response with timestamp and custom prompt
     cache[emailId] = {
       response: response,
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      customPrompt: customPrompt || ''
     };
     
     // Limit cache size to prevent storage issues (keep last 50 entries)
@@ -459,7 +461,7 @@ Provide a concise review with specific suggestions. If the email looks good, say
 }
 
 // Display results
-function displayResults(analysis, isFromCache = false, contentChanged = false) {
+function displayResults(analysis, isFromCache = false, contentChanged = false, savedCustomPrompt = '') {
   document.getElementById('loading').style.display = 'none';
   document.getElementById('status').style.display = 'none';
   document.getElementById('results').style.display = 'block';
@@ -483,6 +485,12 @@ function displayResults(analysis, isFromCache = false, contentChanged = false) {
     }
     reRequestButton.style.display = 'inline-block';
     resultsPromptSection.style.display = 'block';
+    
+    // Populate the custom prompt textarea with the saved prompt
+    const customPromptEdit = document.getElementById('custom-prompt-edit');
+    if (customPromptEdit) {
+      customPromptEdit.value = savedCustomPrompt || '';
+    }
   } else {
     cacheIndicator.style.display = 'none';
     contentChangedIndicator.style.display = 'none';
@@ -561,9 +569,9 @@ async function analyzeEmail(forceRefresh = false, useInitialPrompt = false) {
       // First, try to get cache for current content
       let cachedData = await getCachedResponse(emailId);
       if (cachedData) {
-        // Display cached results for exact same content
+        // Display cached results for exact same content with saved prompt
         await saveLastCheckedHash(currentTab.id, emailId);
-        displayResults(cachedData.response, true, false);
+        displayResults(cachedData.response, true, false, cachedData.customPrompt);
         return;
       }
       
@@ -571,8 +579,8 @@ async function analyzeEmail(forceRefresh = false, useInitialPrompt = false) {
       if (contentChanged) {
         cachedData = await getCachedResponse(lastCheckedHash);
         if (cachedData) {
-          // Display old cached results with indicator that content changed
-          displayResults(cachedData.response, true, true);
+          // Display old cached results with indicator that content changed, with saved prompt
+          displayResults(cachedData.response, true, true, cachedData.customPrompt);
           return;
         }
       }
@@ -582,8 +590,8 @@ async function analyzeEmail(forceRefresh = false, useInitialPrompt = false) {
     document.getElementById('status').textContent = browser.i18n.getMessage('analyzingEmail');
     const analysis = await analyzeEmailWithGemini(emailContent, geminiApiKey, apiEndpoint, customPrompt || '');
     
-    // Save to cache
-    await saveCachedResponse(emailId, analysis);
+    // Save to cache with custom prompt
+    await saveCachedResponse(emailId, analysis, customPrompt);
     
     // Save this as the last checked hash for this tab
     await saveLastCheckedHash(currentTab.id, emailId);
@@ -638,9 +646,9 @@ async function checkForCachedResults() {
     // Try to get cache for current content
     let cachedData = await getCachedResponse(emailId);
     if (cachedData) {
-      // Display cached results for exact same content
+      // Display cached results for exact same content with saved prompt
       await saveLastCheckedHash(currentTab.id, emailId);
-      displayResults(cachedData.response, true, false);
+      displayResults(cachedData.response, true, false, cachedData.customPrompt);
       return true;
     }
     
@@ -648,8 +656,8 @@ async function checkForCachedResults() {
     if (contentChanged) {
       cachedData = await getCachedResponse(lastCheckedHash);
       if (cachedData) {
-        // Display old cached results with indicator that content changed
-        displayResults(cachedData.response, true, true);
+        // Display old cached results with indicator that content changed, with saved prompt
+        displayResults(cachedData.response, true, true, cachedData.customPrompt);
         return true;
       }
     }
@@ -673,17 +681,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   // Load and initialize custom prompt templates
   await loadCustomPromptTemplates();
-  await updateTemplateSelectorOptions('template-selector');
   await updateTemplateSelectorOptions('template-selector-initial');
   
-  // Set up template selector change listeners for both selectors
-  const templateSelector = document.getElementById('template-selector');
-  if (templateSelector) {
-    templateSelector.addEventListener('change', () => handleTemplateChange('template-selector', 'custom-prompt-edit'));
-    // Initialize the first template content
-    handleTemplateChange('template-selector', 'custom-prompt-edit');
-  }
-  
+  // Set up template selector change listener for initial selector only
   const templateSelectorInitial = document.getElementById('template-selector-initial');
   if (templateSelectorInitial) {
     templateSelectorInitial.addEventListener('change', () => handleTemplateChange('template-selector-initial', 'custom-prompt-edit-initial'));
