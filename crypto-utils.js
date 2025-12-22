@@ -255,16 +255,32 @@ function isEncrypted(data) {
 
 // Export functions for use in other scripts
 // Note: For WebExtension, we need to make these globally available
-if (typeof window !== 'undefined') {
-  window.CryptoUtils = {
-    generateProfileKey,
-    deriveKeyFromIdentifier,
-    encryptData,
-    decryptData,
-    encryptSettings,
-    decryptSettings,
-    encryptCacheData,
-    decryptCacheData,
-    isEncrypted
-  };
-}
+// Wrap in IIFE to ensure proper initialization
+(function() {
+  'use strict';
+  
+  try {
+    // Ensure we're in a browser context with window object
+    if (typeof window === 'undefined') {
+      console.error('CryptoUtils: window object is not available');
+      return;
+    }
+    
+    // Initialize CryptoUtils namespace on window object
+    window.CryptoUtils = {
+      generateProfileKey: generateProfileKey,
+      deriveKeyFromIdentifier: deriveKeyFromIdentifier,
+      encryptData: encryptData,
+      decryptData: decryptData,
+      encryptSettings: encryptSettings,
+      decryptSettings: decryptSettings,
+      encryptCacheData: encryptCacheData,
+      decryptCacheData: decryptCacheData,
+      isEncrypted: isEncrypted
+    };
+    
+    console.log('CryptoUtils initialized successfully');
+  } catch (error) {
+    console.error('Error initializing CryptoUtils:', error);
+  }
+})();
