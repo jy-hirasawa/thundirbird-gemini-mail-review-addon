@@ -14,8 +14,9 @@ English | [日本語](USAGE.ja.md)
    - (Optional) Customize the API endpoint URL to use a different Gemini model
      - Default: `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent`
      - You can change this to use other models like `gemini-pro`, `gemini-1.5-pro`, etc.
-   - (Optional) Add a custom prompt to customize how Gemini analyzes your emails
-     - The custom prompt will be prepended to all review requests
+   - (Optional) Add custom prompt templates to customize how Gemini analyzes your emails
+     - You can save up to 3 custom prompt templates with names
+     - Each template can have a descriptive name and custom instructions
      - Example for business email checking: "Review this email for business communication. Check if the language is polite, appropriate for clients, and sufficiently formal. Flag any inappropriate, unnatural, or misleading expressions."
    - Click **Test Connection** to verify your configuration
    - Click **Save Settings**
@@ -26,6 +27,10 @@ English | [日本語](USAGE.ja.md)
 
 4. **Review Before Sending**
    - Before clicking Send, click the **Gemini Mail Review** icon in the compose toolbar
+   - The popup opens with template selection:
+     - Select a custom prompt template from the dropdown (if you configured any)
+     - Review and edit the custom prompt if needed
+     - Click **Analyze Email** to start the analysis
    - Wait for the AI analysis (typically 2-5 seconds)
    - Review the feedback
 

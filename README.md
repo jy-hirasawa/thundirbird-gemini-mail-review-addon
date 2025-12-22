@@ -43,8 +43,10 @@ English | [日本語](README.ja.md)
    - Paste your API key
    - (Optional) Customize the API endpoint URL if you want to use a different Gemini model
      - Default: `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent`
-   - (Optional) Add a custom prompt to customize how Gemini analyzes your emails
-     - The custom prompt will be prepended to all review requests
+   - (Optional) Add custom prompt templates to customize how Gemini analyzes your emails
+     - You can save up to 3 custom prompt templates with names
+     - Each template will be available for selection when reviewing emails
+     - Custom prompts are prepended to the analysis request
      - Example: "Review this email for business communication. Check if the language is polite, appropriate for clients, and sufficiently formal. Flag any inappropriate, unnatural, or misleading expressions."
    - (Optional) Configure cache retention days (1-365 days)
      - Default: 7 days
@@ -56,12 +58,16 @@ English | [日本語](README.ja.md)
 
 1. Compose an email as usual in Thunderbird
 2. Before sending, click the **Gemini Mail Review** icon in the compose window toolbar
-3. The add-on will analyze your email and show the results
+3. The add-on opens with a template selection interface:
+   - **Select Custom Prompt Template**: Choose from your saved templates (Template 1, 2, or 3)
+   - **Edit Custom Prompt**: Review and modify the prompt before analysis
+   - Click **Analyze Email** to start the review
+4. The add-on will analyze your email and show the results
    - If you've already analyzed this exact email (same subject, recipients, and body), the cached response will be shown instantly
    - A "📦 Showing cached response" indicator will appear when displaying cached results
-4. Review the AI feedback and suggestions
-5. Choose to either:
-   - **Request Again from Gemini**: Get a fresh analysis from the API (only shown for cached results)
+5. Review the AI feedback and suggestions
+6. Choose to either:
+   - **Request Again from Gemini**: Get a fresh analysis from the API (only shown for cached results or when content changed)
    - **Edit Email**: Close the popup and make changes
    - **Send Anyway**: Proceed with sending (the email is not sent automatically - you still need to click Send)
 

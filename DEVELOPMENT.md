@@ -78,6 +78,36 @@ https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateCon
 
 Users can configure the endpoint in the options page. If no custom endpoint is set, the default (gemini-2.5-flash) is used automatically.
 
+### Custom Prompt Templates
+
+The add-on supports up to 3 custom prompt templates that users can configure:
+
+**Features:**
+- Each template has a name and content
+- Template names are displayed in the popup UI for easy selection
+- Users can select and edit templates before analyzing emails
+- Templates are stored in browser.storage.local
+- Prompts are prepended to the analysis request
+
+**Storage Format:**
+```javascript
+{
+  customPromptTemplates: {
+    template1: { name: 'Business Email', content: 'Review this email...' },
+    template2: { name: 'Casual Email', content: 'Check if...' },
+    template3: { name: '', content: '' }
+  }
+}
+```
+
+**UI Flow:**
+1. User opens popup → Template selector appears
+2. User selects a template from dropdown (displays template names)
+3. Template content loads into editable textarea
+4. User can modify the prompt before analysis
+5. Modified prompt is used for that specific review
+6. Original template in settings remains unchanged
+
 ### Request Format
 ```javascript
 {
@@ -130,13 +160,13 @@ Users can configure the endpoint in the options page. If no custom endpoint is s
 ## Future Enhancements (Out of Scope)
 
 1. **Attachment Analysis**: Detect missing attachments based on email content
-2. **Custom Prompts**: Allow users to customize the review criteria
-3. **Multiple AI Models**: Support other AI providers (OpenAI, Claude, etc.)
-4. **Batch Review**: Review multiple draft emails at once
-5. **History**: Track review history and common issues
-6. **Suggestions Apply**: Auto-apply AI suggestions with one click
-7. **Offline Mode**: Cache common checks for offline use
-8. **Language Support**: Multi-language email analysis
+2. **Multiple AI Models**: Support other AI providers (OpenAI, Claude, etc.)
+3. **Batch Review**: Review multiple draft emails at once
+4. **History**: Track review history and common issues
+5. **Suggestions Apply**: Auto-apply AI suggestions with one click
+6. **Offline Mode**: Cache common checks for offline use
+7. **Language Support**: Multi-language email analysis
+8. **More Template Slots**: Support more than 3 custom prompt templates
 
 ## Known Limitations
 
