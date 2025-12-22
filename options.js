@@ -129,7 +129,7 @@ async function loadSettings() {
         } else {
           console.warn('CryptoUtils not available, skipping decryption');
           // Fall back to unencrypted if CryptoUtils not available
-          if (geminiApiKey) {
+          if (geminiApiKey && typeof geminiApiKey === 'string' && geminiApiKey.trim()) {
             apiKey = geminiApiKey;
             apiKeyInput.value = apiKey;
           }
@@ -137,12 +137,12 @@ async function loadSettings() {
       } catch (error) {
         console.error('Error decrypting API key:', error);
         // Fall back to unencrypted if decryption fails
-        if (geminiApiKey) {
+        if (geminiApiKey && typeof geminiApiKey === 'string' && geminiApiKey.trim()) {
           apiKey = geminiApiKey;
           apiKeyInput.value = apiKey;
         }
       }
-    } else if (geminiApiKey) {
+    } else if (geminiApiKey && typeof geminiApiKey === 'string' && geminiApiKey.trim()) {
       // Legacy unencrypted API key
       apiKey = geminiApiKey;
       apiKeyInput.value = apiKey;

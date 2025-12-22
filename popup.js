@@ -416,16 +416,16 @@ async function saveCachedResponse(emailId, response, customPrompt) {
               const decrypted = await window.CryptoUtils.decryptCacheData(cache[key], key);
               timestamp = decrypted.timestamp;
             } else {
-              console.warn('CryptoUtils not available, treating entry as oldest');
-              // If we can't decrypt, treat as oldest and remove it
-              timestamp = 0;
+              console.warn('CryptoUtils not available, marking entry for removal');
+              // If we can't decrypt, mark with -1 to distinguish from old entries
+              timestamp = -1;
             }
           } else if (cache[key] && typeof cache[key].timestamp === 'number') {
             // Unencrypted legacy entry
             timestamp = cache[key].timestamp;
           } else {
-            // Invalid entry - mark for deletion
-            timestamp = 0;
+            // Invalid entry - mark for deletion with -1
+            timestamp = -1;
           }
           
           if (timestamp < oldestTime) {
