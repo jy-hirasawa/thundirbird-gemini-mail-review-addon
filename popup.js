@@ -461,7 +461,7 @@ Provide a concise review with specific suggestions. If the email looks good, say
 }
 
 // Display results
-function displayResults(analysis, isFromCache = false, contentChanged = false, savedCustomPrompt = '') {
+function displayResults(analysis, isFromCache = false, contentChanged = false, savedCustomPrompt = '', showPromptSection = false) {
   document.getElementById('loading').style.display = 'none';
   document.getElementById('status').style.display = 'none';
   document.getElementById('results').style.display = 'block';
@@ -494,8 +494,21 @@ function displayResults(analysis, isFromCache = false, contentChanged = false, s
   } else {
     cacheIndicator.style.display = 'none';
     contentChangedIndicator.style.display = 'none';
-    reRequestButton.style.display = 'none';
-    resultsPromptSection.style.display = 'none';
+    
+    // Show prompt section and re-request button if explicitly requested (after re-request)
+    if (showPromptSection) {
+      reRequestButton.style.display = 'inline-block';
+      resultsPromptSection.style.display = 'block';
+      
+      // Populate the custom prompt textarea with the prompt that was just used
+      const customPromptEdit = document.getElementById('custom-prompt-edit');
+      if (customPromptEdit) {
+        customPromptEdit.value = savedCustomPrompt || '';
+      }
+    } else {
+      reRequestButton.style.display = 'none';
+      resultsPromptSection.style.display = 'none';
+    }
   }
 }
 
@@ -597,8 +610,8 @@ async function analyzeEmail(forceRefresh = false, useInitialPrompt = false) {
     await saveLastCheckedHash(currentTab.id, emailId);
     
     // Display results
-    // If this was a force refresh (re-request), show the prompt section again
-    displayResults(analysis, forceRefresh, false, customPrompt);
+    // If this was a force refresh (re-request), show the prompt section for immediate re-editing
+    displayResults(analysis, false, false, customPrompt, forceRefresh);
     
   } catch (error) {
     console.error('Error analyzing email:', error);
