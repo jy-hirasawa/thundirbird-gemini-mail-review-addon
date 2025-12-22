@@ -10,7 +10,7 @@ English | [日本語](README.ja.md)
 - ✅ **Comprehensive Checks**: Reviews spelling, grammar, tone, professionalism, and clarity
 - ⚠️ **Issue Detection**: Identifies potential problems like missing attachments or unclear messaging
 - 🎯 **Easy to Use**: Simply click the add-on icon in the compose window
-- 🔒 **Secure**: Your API key is stored locally in Thunderbird
+- 🔒 **Secure**: API keys and cache data are protected with AES-GCM encryption and stored locally in Thunderbird
 - 📦 **Smart Caching**: Automatically caches responses to avoid redundant API calls for the same email content
 
 ## Installation
@@ -107,7 +107,14 @@ The AI reviews for:
 
 ## Privacy Notice
 
-This add-on sends your email content to Google's Gemini API for analysis. Your emails are processed according to [Google's Privacy Policy](https://policies.google.com/privacy). The API key is stored locally in your Thunderbird profile and is never sent to any third party except Google's API endpoints.
+This add-on sends your email content to Google's Gemini API for analysis. Your emails are processed according to [Google's Privacy Policy](https://policies.google.com/privacy).
+
+**Security Features**:
+- API keys and custom prompts are stored locally with AES-GCM encryption
+- Cached email data is encrypted with email-specific keys
+- Profile-specific encryption isolates data between different Thunderbird profiles
+- Encryption keys are derived from profile ID and email ID
+- See [SECURITY.md](SECURITY.md) for details
 
 **Important**: Do not use this add-on for highly sensitive or confidential emails unless you are comfortable with them being processed by Google's AI service.
 
