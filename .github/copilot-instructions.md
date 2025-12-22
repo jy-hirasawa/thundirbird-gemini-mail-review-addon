@@ -78,6 +78,16 @@ When you add a new file (e.g., `new-feature.js`), add it to the "Create ZIP file
    - English documentation: `doc/en/`
    - Japanese documentation: `doc/ja/`
 
+#### Language Links Requirement:
+
+**IMPORTANT**: All documentation files must include language links to their counterpart versions at the top of the file, similar to README.md.
+
+- **English documents** should link to Japanese versions with format: `English | [日本語](../ja/FILENAME.md)` for doc/ files
+- **Japanese documents** should link to English versions with format: `[English](../en/FILENAME.md) | 日本語` for doc/ files
+- **Root documents** (README, USAGE) follow the pattern already established (e.g., `English | [日本語](README.ja.md)`)
+
+This ensures users can easily switch between language versions of any document.
+
 #### Example Documentation Structure:
 ```
 repository-root/

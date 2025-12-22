@@ -1,5 +1,7 @@
 # Security Policy
 
+English | [日本語](../ja/SECURITY.md)
+
 ## Data Storage and Privacy
 
 This add-on stores the following data locally in Thunderbird's browser.storage.local:

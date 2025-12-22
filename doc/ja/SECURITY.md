@@ -1,5 +1,7 @@
 # セキュリティポリシー
 
+[English](../en/SECURITY.md) | 日本語
+
 ## データストレージとプライバシー
 
 このアドオンは、Thunderbird の browser.storage.local に以下のデータをローカルに保存します：
