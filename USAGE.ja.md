@@ -27,7 +27,7 @@
    - **接続テスト** をクリックして設定を確認
    - **設定を保存** をクリック
 
-   ![設定画面](doc/images/settings-page.png)
+   ![設定画面](doc/images/settings-page-ja.png)
    *API キー設定、カスタムプロンプト、その他のオプションを示す設定画面*
 
 3. **メールを作成**
@@ -37,7 +37,7 @@
 4. **送信前にレビュー**
    - 送信ボタンをクリックする前に、作成ツールバーの **Gemini Mail Review** アイコンをクリック
    
-   ![作成ウィンドウのアイコン](doc/images/compose-window-icon.png)
+   ![作成ウィンドウのアイコン](doc/images/compose-window-icon-ja.png)
    *Thunderbird 作成ウィンドウツールバーの Gemini Mail Review アイコン*
    
    - ポップアップがテンプレート選択画面で開きます：
