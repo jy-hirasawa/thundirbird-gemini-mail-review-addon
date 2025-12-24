@@ -27,22 +27,61 @@ English | [日本語](USAGE.ja.md)
    - Click **Test Connection** to verify your configuration
    - Click **Save Settings**
 
+   ![Settings Page](doc/images/settings-page.png)
+   *Settings page showing API key configuration, custom prompts, and other options*
+
 3. **Compose an Email**
    - Create a new email or reply to an existing one
    - Write your email as usual
 
 4. **Review Before Sending**
    - Before clicking Send, click the **Gemini Mail Review** icon in the compose toolbar
+   
+   ![Compose Window with Icon](doc/images/compose-window-icon.png)
+   *The Gemini Mail Review icon in the Thunderbird compose window toolbar*
+   
    - The popup opens with template selection:
      - Select a custom prompt template from the dropdown (if you configured any)
      - Review and edit the custom prompt if needed
      - Click **Analyze Email** to start the analysis
+   
+   ![Template Selection](doc/images/popup-template-selection.png)
+   *Popup showing template selection and custom prompt editor*
+   
    - Wait for the AI analysis (typically 2-5 seconds)
+   
+   ![Analyzing](doc/images/popup-analyzing.png)
+   *Analysis in progress*
+   
    - Review the feedback
+   
+   ![Analysis Results](doc/images/popup-results.png)
+   *AI feedback and suggestions displayed*
 
 5. **Act on Feedback**
    - **Edit Email**: Close the popup and make changes based on suggestions
    - **Send Anyway**: Close the popup and proceed to send (you still need to click the Send button)
+
+## Understanding Cached Results
+
+When you analyze the same email multiple times, the add-on uses smart caching to save API calls and provide instant feedback.
+
+### Cached Response
+When you review an email you've already analyzed, you'll see a cached response indicator:
+
+![Cached Result](doc/images/popup-cached-result.png)
+*Cached analysis result showing instantly with "📦 Showing cached response" indicator*
+
+### Content Changed Warning
+If you edit your email after analyzing it, the next review will show the previous analysis with a warning:
+
+![Content Changed](doc/images/popup-content-changed.png)
+*Previous analysis displayed with "⚠️ Email content has changed" warning and option to request fresh analysis*
+
+This allows you to:
+- Quickly see your previous feedback
+- Decide if you need a new analysis for your changes
+- Click "Request Again from Gemini" if you want fresh analysis of the updated content
 
 ## Example Use Cases
 
