@@ -166,6 +166,40 @@ When making code changes, ask yourself:
 - ✅ Update `doc/en/SECURITY.md` and `doc/ja/SECURITY.md` (explain the new mechanism)
 - ✅ Update `README.md` and `README.ja.md` security section if user-visible
 
+## Screenshots and Images
+
+### Japanese Screenshots and Images
+
+**IMPORTANT**: When creating screenshots or images containing Japanese text, you MUST use appropriate Japanese fonts to ensure proper text rendering.
+
+#### Required Fonts:
+
+Use the following fonts when creating Japanese screenshots or images:
+- `font-noto-cjk` - Noto CJK (Chinese, Japanese, Korean) fonts
+- `font-ipa` - IPA fonts (Japanese)
+
+These fonts ensure that Japanese characters (hiragana, katakana, and kanji) are displayed correctly and professionally in all documentation images.
+
+#### Installation (for documentation creators):
+
+On Ubuntu/Debian-based systems:
+```bash
+sudo apt-get install fonts-noto-cjk fonts-ipafont
+```
+
+On Fedora/RHEL-based systems:
+```bash
+sudo dnf install google-noto-cjk-fonts ipa-gothic-fonts ipa-mincho-fonts
+```
+
+#### Usage:
+
+When taking screenshots of the Thunderbird add-on interface with Japanese text:
+1. Ensure the required fonts are installed on your system
+2. Configure your screenshot tool or browser to use these fonts
+3. Verify that Japanese characters render correctly before saving the image
+4. Save images to the `doc/images/` directory with appropriate naming (e.g., `feature-name-ja.png` for Japanese versions)
+
 ## General Guidelines
 
 1. **Keep documentation in sync**: Both English and Japanese documentation should be updated together
