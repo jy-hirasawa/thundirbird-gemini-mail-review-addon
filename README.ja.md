@@ -17,7 +17,7 @@ Google の Gemini AI を使用してメール送信前にチェックする Thun
 
 ### ソースから
 
-1. このリポジトリをクローンまたはダウンロード
+1. https://github.com/jy-hirasawa/thunderbird-gemini-mail-review-addon/releases/ から最新のReleaseをダウンロード
 2. Thunderbird を開く
 3. **ツール** → **アドオンとテーマ**（または `Ctrl+Shift+A` を押す）
 4. 歯車アイコン ⚙️ をクリックして **ファイルからアドオンをインストール** を選択

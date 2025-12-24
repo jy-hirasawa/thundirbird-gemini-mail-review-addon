@@ -17,7 +17,7 @@ English | [日本語](README.ja.md)
 
 ### From Source
 
-1. Clone or download this repository
+1. Download the latest release from https://github.com/jy-hirasawa/thunderbird-gemini-mail-review-addon/releases/
 2. Open Thunderbird
 3. Go to **Tools** → **Add-ons and Themes** (or press `Ctrl+Shift+A`)
 4. Click the gear icon ⚙️ and select **Install Add-on From File**
