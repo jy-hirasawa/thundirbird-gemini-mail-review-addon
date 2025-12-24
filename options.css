@@ -219,3 +219,48 @@ strong {
 .template-group input[type="text"] {
   margin-bottom: 8px;
 }
+
+/* Tab styles */
+.tabs {
+  margin-top: 12px;
+}
+
+.tab-buttons {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid #ddd;
+  margin-bottom: 16px;
+}
+
+.tab-button {
+  padding: 10px 20px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: #666;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+  position: relative;
+  bottom: -2px;
+}
+
+.tab-button:hover {
+  color: #333;
+  background: #f8f8f8;
+}
+
+.tab-button.active {
+  color: #0a84ff;
+  border-bottom-color: #0a84ff;
+  font-weight: 600;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}

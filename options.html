@@ -33,25 +33,39 @@
           You can save 3 types of custom prompt templates. When reviewing emails, you can select and edit the template.
         </p>
         
-        <div class="template-group">
-          <label for="custom-prompt-name-1" data-i18n="customPromptTemplateName1Label">Template 1 Name:</label>
-          <input type="text" id="custom-prompt-name-1" data-i18n-placeholder="customPromptTemplateNamePlaceholder" placeholder="Template name (optional)" />
-          <label for="custom-prompt-1" data-i18n="customPromptTemplate1Label">Template 1:</label>
-          <textarea id="custom-prompt-1" rows="4" data-i18n-placeholder="customPromptPlaceholder" placeholder="Optional: Enter additional instructions for Gemini AI"></textarea>
-        </div>
-        
-        <div class="template-group">
-          <label for="custom-prompt-name-2" data-i18n="customPromptTemplateName2Label">Template 2 Name:</label>
-          <input type="text" id="custom-prompt-name-2" data-i18n-placeholder="customPromptTemplateNamePlaceholder" placeholder="Template name (optional)" />
-          <label for="custom-prompt-2" data-i18n="customPromptTemplate2Label">Template 2:</label>
-          <textarea id="custom-prompt-2" rows="4" data-i18n-placeholder="customPromptPlaceholder" placeholder="Optional: Enter additional instructions for Gemini AI"></textarea>
-        </div>
-        
-        <div class="template-group">
-          <label for="custom-prompt-name-3" data-i18n="customPromptTemplateName3Label">Template 3 Name:</label>
-          <input type="text" id="custom-prompt-name-3" data-i18n-placeholder="customPromptTemplateNamePlaceholder" placeholder="Template name (optional)" />
-          <label for="custom-prompt-3" data-i18n="customPromptTemplate3Label">Template 3:</label>
-          <textarea id="custom-prompt-3" rows="4" data-i18n-placeholder="customPromptPlaceholder" placeholder="Optional: Enter additional instructions for Gemini AI"></textarea>
+        <div class="tabs">
+          <div class="tab-buttons">
+            <button type="button" class="tab-button active" data-tab="template-1" data-i18n="customPromptTemplate1Label">Template 1</button>
+            <button type="button" class="tab-button" data-tab="template-2" data-i18n="customPromptTemplate2Label">Template 2</button>
+            <button type="button" class="tab-button" data-tab="template-3" data-i18n="customPromptTemplate3Label">Template 3</button>
+          </div>
+          
+          <div class="tab-content active" id="template-1">
+            <div class="template-group">
+              <label for="custom-prompt-name-1" data-i18n="customPromptTemplateName1Label">Template 1 Name:</label>
+              <input type="text" id="custom-prompt-name-1" data-i18n-placeholder="customPromptTemplateNamePlaceholder" placeholder="Template name (optional)" />
+              <label for="custom-prompt-1" data-i18n="customPromptTemplate1Label">Template 1:</label>
+              <textarea id="custom-prompt-1" rows="4" data-i18n-placeholder="customPromptPlaceholder" placeholder="Optional: Enter additional instructions for Gemini AI"></textarea>
+            </div>
+          </div>
+          
+          <div class="tab-content" id="template-2">
+            <div class="template-group">
+              <label for="custom-prompt-name-2" data-i18n="customPromptTemplateName2Label">Template 2 Name:</label>
+              <input type="text" id="custom-prompt-name-2" data-i18n-placeholder="customPromptTemplateNamePlaceholder" placeholder="Template name (optional)" />
+              <label for="custom-prompt-2" data-i18n="customPromptTemplate2Label">Template 2:</label>
+              <textarea id="custom-prompt-2" rows="4" data-i18n-placeholder="customPromptPlaceholder" placeholder="Optional: Enter additional instructions for Gemini AI"></textarea>
+            </div>
+          </div>
+          
+          <div class="tab-content" id="template-3">
+            <div class="template-group">
+              <label for="custom-prompt-name-3" data-i18n="customPromptTemplateName3Label">Template 3 Name:</label>
+              <input type="text" id="custom-prompt-name-3" data-i18n-placeholder="customPromptTemplateNamePlaceholder" placeholder="Template name (optional)" />
+              <label for="custom-prompt-3" data-i18n="customPromptTemplate3Label">Template 3:</label>
+              <textarea id="custom-prompt-3" rows="4" data-i18n-placeholder="customPromptPlaceholder" placeholder="Optional: Enter additional instructions for Gemini AI"></textarea>
+            </div>
+          </div>
         </div>
       </div>
       
