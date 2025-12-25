@@ -77,12 +77,52 @@ jobs:
           path: gemini-mail-review-${{ steps.version.outputs.version }}.zip
           retention-days: 90
       
+      - name: Generate Release Notes
+        id: release_notes
+        run: |
+          cat << 'EOF' > release_notes.md
+          ## 📦 Installation
+          
+          ### From Release
+          
+          1. Download the `gemini-mail-review-${{ steps.version.outputs.version }}.zip` file below
+          2. Open Thunderbird
+          3. Go to **Tools** → **Add-ons and Themes** (or press `Ctrl+Shift+A`)
+          4. Click the gear icon ⚙️ and select **Install Add-on From File**
+          5. Select the downloaded ZIP file
+          
+          ### Requirements
+          
+          - Thunderbird 102.0 or later
+          - A Google Gemini API key ([Get one for free](https://makersuite.google.com/app/apikey))
+          
+          ## 📚 Documentation
+          
+          - 📖 [Usage Guide (English)](https://github.com/jy-hirasawa/thunderbird-gemini-mail-review-addon/blob/main/USAGE.md)
+          - 📖 [使い方 (日本語)](https://github.com/jy-hirasawa/thunderbird-gemini-mail-review-addon/blob/main/USAGE.ja.md)
+          - 📖 [README (English)](https://github.com/jy-hirasawa/thunderbird-gemini-mail-review-addon/blob/main/README.md)
+          - 📖 [README (日本語)](https://github.com/jy-hirasawa/thunderbird-gemini-mail-review-addon/blob/main/README.ja.md)
+          
+          ## ✨ Features
+          
+          - 🤖 **AI-Powered Review**: Uses Google's Gemini Pro model to analyze your emails
+          - ✅ **Comprehensive Checks**: Reviews spelling, grammar, tone, professionalism, and clarity
+          - ⚠️ **Issue Detection**: Identifies potential problems like missing attachments or unclear messaging
+          - 🎯 **Easy to Use**: Simply click the add-on icon in the compose window
+          - 🔒 **Secure**: API keys are encrypted and stored locally
+          - 📦 **Smart Caching**: Automatically caches responses to avoid redundant API calls
+          
+          ---
+          
+          EOF
+      
       - name: Create Release
         if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.version.outputs.tag_name }}
           name: Release ${{ steps.version.outputs.version }}
+          body_path: release_notes.md
           files: gemini-mail-review-${{ steps.version.outputs.version }}.zip
           generate_release_notes: true
           draft: false
